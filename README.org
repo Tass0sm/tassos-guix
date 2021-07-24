@@ -1,1 +1,1 @@
-My Guix channel.
+My [[https://guix.gnu.org][GNU Guix]] channel for personal packages and services.

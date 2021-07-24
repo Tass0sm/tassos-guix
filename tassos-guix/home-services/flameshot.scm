@@ -1,4 +1,4 @@
-(define-module (tassos home-services flameshot)
+(define-module (tassos-guix home-services flameshot)
   #:use-module (gnu home-services)
   #:use-module (gnu home-services-utils)
   #:use-module (gnu home-services files)
