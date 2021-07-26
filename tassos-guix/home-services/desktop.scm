@@ -35,7 +35,9 @@
   (list (home-bspwm-configuration-package config)))
 
 (define (add-bspwm-files config)
-  (let ((bspwmrc (serialize-text-config #f (home-bspwm-config-bspwmrc config))))
+  (let ((bspwmrc (serialize-text-config
+		  #f
+		  (home-bspwm-configuration-bspwmrc config))))
     `(("config/bspwm/bspwmrc" ,(mixed-text-file
  				"bspwmrc"
 				bspwmrc)))))
