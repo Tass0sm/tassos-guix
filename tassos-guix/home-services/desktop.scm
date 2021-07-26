@@ -15,6 +15,9 @@
   #:export (home-bspwm-configuration
 	    home-bspwm-service-type
 
+	    home-sxhkd-configuration
+	    home-sxhkd-service-type
+
 	    home-xfce-configuration
 	    home-xfce-service-type))
 
