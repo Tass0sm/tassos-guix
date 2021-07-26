@@ -34,19 +34,11 @@
 (define (add-bspwm-package config)
   (list (home-bspwm-configuration-package config)))
 
-;; (define (add-bspwm-files config)
-;;   (if (null? config)
-;;       ;; TODO: load default from /etc/
-;;       `(("config/bspwm/bspwmrc"
-;;          ,(mixed-text-file
-;; 	   "bspwmrc"
-;;            (serialize-text-config #f
-;; 				  (home-bspwm-config-bspwmrc config)))))
-;;       `(("config/bspwm/bspwmrc"
-;;          ,(mixed-text-file
-;; 	   "bspwmrc"
-;;            (serialize-text-config #f
-;; 				  (home-bspwm-config-bspwmrc config)))))))
+(define (add-bspwm-files config)
+  (let ((bspwmrc (serialize-text-config #f (home-bspwm-config-bspwmrc config))))
+    `(("config/bspwm/bspwmrc" ,(mixed-text-file
+ 				"bspwmrc"
+				bspwmrc)))))
 
 (define home-bspwm-service-type
   (service-type (name 'home-bspwm)
@@ -54,10 +46,9 @@
                  (list (service-extension
                         home-profile-service-type
                         add-bspwm-package)
-;;                       (service-extension
-;;                        home-files-service-type
-;;                        bspwm-files-service)
-		       ))
+                       (service-extension
+                        home-files-service-type
+                        add-bspwm-files)))
                 (description "Install and configure the binary space
 partitioning window manager.")))
 
