@@ -21,6 +21,22 @@
 	    home-xfce-configuration
 	    home-xfce-service-type))
 
+(define* (mixed-executable-text-file name #:rest text)
+  "Return an object representing an executable store file NAME containing TEXT.
+TEXT is a sequence of strings and file-like objects, as in:
+
+  (mixed-text-file \"profile\"
+                   \"export PATH=\" coreutils \"/bin:\" grep \"/bin\")
+
+This is the declarative counterpart of 'text-file*'."
+  (define build
+    (gexp (call-with-output-file (ungexp output "out")
+            (lambda (port)
+	      (chmod port #o555)
+              (display (string-append (ungexp-splicing text)) port)))))
+
+  (computed-file name build))
+
 					; bspwm
 
 (define-configuration/no-serialization home-bspwm-configuration
@@ -38,7 +54,7 @@
   (let ((bspwmrc (serialize-text-config
 		  #f
 		  (home-bspwm-configuration-bspwmrc config))))
-    `(("config/bspwm/bspwmrc" ,(program-file
+    `(("config/bspwm/bspwmrc" ,(mixed-executable-text-file
  				"bspwmrc"
 				bspwmrc)))))
 
