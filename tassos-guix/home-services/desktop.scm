@@ -38,7 +38,7 @@
   (let ((bspwmrc (serialize-text-config
 		  #f
 		  (home-bspwm-configuration-bspwmrc config))))
-    `(("config/bspwm/bspwmrc" ,(mixed-text-file
+    `(("config/bspwm/bspwmrc" ,(program-file
  				"bspwmrc"
 				bspwmrc)))))
 
@@ -67,19 +67,13 @@ partitioning window manager.")))
 (define (add-sxhkd-package config)
   (list (home-sxhkd-configuration-package config)))
 
-;; (define (add-sxhkd-files config)
-;;   (if (null? config)
-;;       ;; TODO: load default from /etc/
-;;       `(("config/bspwm/bspwmrc"
-;;          ,(mixed-text-file
-;; 	   "bspwmrc"
-;;            (serialize-text-config #f
-;; 				  (home-bspwm-config-bspwmrc config)))))
-;;       `(("config/bspwm/bspwmrc"
-;;          ,(mixed-text-file
-;; 	   "bspwmrc"
-;;            (serialize-text-config #f
-;; 				  (home-bspwm-config-bspwmrc config)))))))
+(define (add-sxhkd-files config)
+  (let ((sxhkdrc (serialize-text-config
+		  #f
+		  (home-sxhkd-configuration-sxhkdrc config))))
+    `(("config/sxhkd/sxhkdrc" ,(mixed-text-file
+ 				"sxhkdrc"
+				sxhkdrc)))))
 
 (define home-sxhkd-service-type
   (service-type (name 'home-sxhkd)
@@ -87,23 +81,25 @@ partitioning window manager.")))
                  (list (service-extension
                         home-profile-service-type
                         add-sxhkd-package)
-;;                       (service-extension
-;;                        home-files-service-type
-;;                        bspwm-files-service)
-		       ))
+		       (service-extension
+                        home-files-service-type
+                        add-sxhkd-files)))
                 (description "Install and configure the simple X11 hotkey
 daemon.")))
 
 					; xfce
 
-;; (define-configuration Home-sxhkd-configuration
-;;   (package
-;;    (package flameshot)
-;;    "Flameshot package to use.")
-;;   (server-mode?
-;;    (boolean #f)
-;;    "Create a shepherd service, which starts a flameshot deamon."))
-;; 
+(define-configuration/no-serialization home-xfce-configuration
+  (package
+   (package flameshot)
+   "Flameshot package to use.")
+
+  ;; 
+  
+  (server-mode?
+   (boolean #f)
+   "Create a shepherd service, which starts a flameshot deamon."))
+ 
 ;; (define (add-xfce-packages config)
 ;;   (map specification->package
 ;;        (list
@@ -117,15 +113,18 @@ daemon.")))
 ;; 	"xbacklight"
 ;; 	"pavucontrol")))
 ;; 
-;; (define xfce-desktop-service-type
-;;   (service-type
-;;    (name 'xfce-desktop)
-;;    (extensions
-;;     (list (service-extension polkit-service-type
-;;                              xfce-polkit-settings)
-;;           (service-extension profile-service-type
-;;                              (compose list xfce-package))))
-;;    (default-value (xfce-desktop-configuration))
-;;    (description "Run the Xfce desktop environment.")))
-;; 
-;; 
+
+(define xfce-desktop-service-type
+  (service-type
+   (name 'xfce-desktop)
+   (extensions
+    (list
+;;     (service-extension polkit-service-type
+;;                        xfce-polkit-settings)
+;;     (service-extension profile-service-type
+;;                        (compose list xfce-package))
+     ))
+   (default-value (xfce-desktop-configuration))
+   (description "Run the Xfce desktop environment.")))
+ 
+ 
