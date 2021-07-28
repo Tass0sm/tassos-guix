@@ -89,17 +89,17 @@ daemon.")))
 
 					; xfce
 
-(define-configuration/no-serialization home-xfce-configuration
-  (package
-   (package flameshot)
-   "Flameshot package to use.")
-
-  ;; 
-  
-  (server-mode?
-   (boolean #f)
-   "Create a shepherd service, which starts a flameshot deamon."))
- 
+;; (define-configuration/no-serialization home-xfce-configuration
+;;   (package
+;;    (package flameshot)
+;;    "Flameshot package to use.")
+;; 
+;;   ;; 
+;;   
+;;   (server-mode?
+;;    (boolean #f)
+;;    "Create a shepherd service, which starts a flameshot deamon."))
+;;  
 ;; (define (add-xfce-packages config)
 ;;   (map specification->package
 ;;        (list
@@ -114,17 +114,17 @@ daemon.")))
 ;; 	"pavucontrol")))
 ;; 
 
-(define xfce-desktop-service-type
-  (service-type
-   (name 'xfce-desktop)
-   (extensions
-    (list
+;;(define xfce-desktop-service-type
+;;  (service-type
+;;   (name 'xfce-desktop)
+;;   (extensions
+;;    (list
 ;;     (service-extension polkit-service-type
 ;;                        xfce-polkit-settings)
 ;;     (service-extension profile-service-type
 ;;                        (compose list xfce-package))
-     ))
-   (default-value (xfce-desktop-configuration))
-   (description "Run the Xfce desktop environment.")))
+;;     ))
+;;   (default-value (xfce-desktop-configuration))
+;;   (description "Run the Xfce desktop environment.")))
  
  
