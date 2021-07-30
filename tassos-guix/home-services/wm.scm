@@ -12,7 +12,10 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
 
-  #:export (home-bspwm-configuration
+  #:export (home-polybar-configuration
+	    home-polybar-service-type
+
+	    home-bspwm-configuration
 	    home-bspwm-service-type
 
 	    home-sxhkd-configuration
@@ -20,6 +23,39 @@
 
 	    home-xfce-configuration
 	    home-xfce-service-type))
+
+					; polybar
+
+(define-configuration/no-serialization home-polybar-configuration
+  (package
+   (package polybar)
+   "The polybar package to use.")
+  (config
+   (text-config '())
+   "List of strings or gexps containing the polybar config file."))
+
+(define (add-polybar-package config)
+  (list (home-polybar-configuration-package config)))
+
+(define (add-polybar-files config)
+  `(("config/polybar/config" ,(mixed-text-file
+ 			       "config"
+			       (serialize-text-config
+				#f
+				(home-polybar-configuration-config config))))))	       
+
+(define home-polybar-service-type
+  (service-type (name 'home-polybar)
+                (extensions
+                 (list (service-extension
+                        home-profile-service-type
+                        add-polybar-package)
+                       (service-extension
+                        home-files-service-type
+                        add-polybar-files)))
+                (description "Install and configure polybar.")))
+
+					; bspwm
 
 (define* (mixed-executable-text-file name #:rest text)
   "Return an object representing an executable store file NAME containing TEXT.
@@ -36,8 +72,6 @@ This is the declarative counterpart of 'text-file*'."
               (display (string-append (ungexp-splicing text)) port)))))
 
   (computed-file name build))
-
-					; bspwm
 
 (define-configuration/no-serialization home-bspwm-configuration
   (package
