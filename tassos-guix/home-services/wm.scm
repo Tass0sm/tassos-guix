@@ -1,12 +1,13 @@
 (define-module (tassos-guix home-services wm)
   #:use-module (gnu home-services)
   #:use-module (gnu home-services-utils)
-  #:use-module (gnu home-services files)
   #:use-module (gnu home-services shepherd)
   #:use-module (gnu packages wm)
   #:use-module (gnu packages xfce)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu services configuration)
+
+  #:use-module (srfi srfi-1)
 
   #:use-module (guix packages)
   #:use-module (guix gexp)
