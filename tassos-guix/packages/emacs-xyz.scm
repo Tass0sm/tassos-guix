@@ -242,3 +242,89 @@ mode is the base for other libraries to build on. An example is the included
 code-highlighting minor mode.
 ")
     (license #f)))
+
+(define-public emacs-reazon
+  (package
+   (name "emacs-reazon")
+   (version "20210831.1208")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/nickdrozd/reazon.git")
+           (commit "d697c0dfe38ac7483e453e8ce8056acf95c89ba2")))
+     (sha256
+      (base32 "12s2h4wd7cz9x078698wwjjpy874rk8cm2d17p6ksb10y3cmrqsn"))))
+   (build-system emacs-build-system)
+   (home-page "https://github.com/nickdrozd/reazon")
+   (synopsis "miniKanren for Emacs")
+   (description
+    "Reazon is an implmentation of the miniKanren language for Emacs. It
+provides an interface for writing and running relational programs.
+That interface consists of the following macros:
+
+* reazon-defrel
+* reazon-run*
+* reazon-run
+* reazon-fresh
+* reazon-conde
+* reazon-conj
+* reazon-disj
+* reazon-project
+
+Besides these, there is a single primitive goal, reazon-==.
+")
+   (license #f)))
+
+(define-public emacs-tree-edit
+  (package
+   (name "emacs-tree-edit")
+   (version "20211209.2258")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/ethan-leba/tree-edit.git")
+           (commit "6f544be43e24a3b2f9aca7cba1bd960bb824605d")))
+     (sha256
+      (base32 "14k39ngsxv35k4lvl2qgxrr6pjinz3r618f9b4lrw07rr46p0637"))))
+   (build-system emacs-build-system)
+   (propagated-inputs
+    `(("emacs-tree-sitter" ,emacs-tree-sitter)
+      ("emacs-tsc" ,emacs-tsc)
+      ;; ("emacs-tree-sitter-langs" ,emacs-tree-sitter-langs)
+      ("emacs-dash" ,emacs-dash)
+      ("emacs-reazon" ,emacs-reazon)
+      ("emacs-s" ,emacs-s)))
+   (arguments
+    '(#:include
+      '("^[^/]+.el$"
+        "^[^/]+.el.in$"
+        "^dir$"
+        "^[^/]+.info$"
+        "^[^/]+.texi$"
+        "^[^/]+.texinfo$"
+        "^doc/dir$"
+        "^doc/[^/]+.info$"
+        "^doc/[^/]+.texi$"
+        "^doc/[^/]+.texinfo$")
+      #:exclude
+      '("^.dir-locals.el$"
+        "^test.el$"
+        "^tests.el$"
+        "^[^/]+-test.el$"
+        "^[^/]+-tests.el$"
+        "^evil-tree-edit.el$")))
+   (home-page "https://github.com/ethan-leba/tree-edit")
+   (synopsis "A library for structural refactoring and editing")
+   (description
+    "
+Provides a set of functions for structural editing or refactoring in any
+language supported by tree-sitter.
+
+The interface for this package is currently unstable, developing against it is
+unadvised!
+
+See `evil-tree-edit' if you're looking for a complete editing package.
+")
+   (license #f)))
