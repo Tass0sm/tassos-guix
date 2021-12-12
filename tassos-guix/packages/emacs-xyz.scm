@@ -328,3 +328,33 @@ unadvised!
 See `evil-tree-edit' if you're looking for a complete editing package.
 ")
    (license #f)))
+
+(define-public emacs-beacon
+  (package
+   (name "emacs-beacon")
+   (version "20190104.1931")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/Malabarba/beacon.git")
+           (commit "bde78180c678b233c94321394f46a81dc6dce1da")))
+     (sha256
+      (base32 "19m90jjbsjzhzf7phlg79l8d2kxgrqnrrg1ipa3sf7vzxxkmsdld"))))
+   (build-system emacs-build-system)
+   (home-page "https://github.com/Malabarba/beacon")
+   (synopsis "Highlight the cursor whenever the window scrolls")
+   (description
+    "This is a global minor-mode. Turn it on everywhere with:
+┌────
+│ (beacon-mode 1)
+└────
+
+Whenever the window scrolls a light will shine on top of your cursor so
+you know where it is.
+
+That’s it.
+
+See the accompanying Readme.org for configuration details.
+")
+   (license #f)))
