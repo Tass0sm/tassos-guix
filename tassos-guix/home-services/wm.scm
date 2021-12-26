@@ -1,7 +1,6 @@
 (define-module (tassos-guix home-services wm)
   #:use-module (gnu home services)
   #:use-module (gnu home services utils)
-  #:use-module (gnu home services shepherd)
   #:use-module (gnu packages wm)
   #:use-module (gnu packages xfce)
   #:use-module (gnu packages xdisorg)
@@ -14,18 +13,15 @@
   #:use-module (guix utils)
 
   #:export (home-polybar-configuration
-	    home-polybar-service-type
+            home-polybar-service-type
 
-	    home-bspwm-configuration
-	    home-bspwm-service-type
+            home-bspwm-configuration
+            home-bspwm-service-type
 
-	    home-sxhkd-configuration
-	    home-sxhkd-service-type
+            home-sxhkd-configuration
+            home-sxhkd-service-type))
 
-	    home-xfce-configuration
-	    home-xfce-service-type))
-
-					; polybar
+                                        ; polybar
 
 (define-configuration/no-serialization home-polybar-configuration
   (package
@@ -40,10 +36,10 @@
 
 (define (add-polybar-files config)
   `(("config/polybar/config" ,(mixed-text-file
- 			       "config"
-			       (serialize-text-config
-				#f
-				(home-polybar-configuration-config config))))))	       
+                               "config"
+                               (serialize-text-config
+                                #f
+                                (home-polybar-configuration-config config))))))
 
 (define home-polybar-service-type
   (service-type (name 'home-polybar)
@@ -56,7 +52,7 @@
                         add-polybar-files)))
                 (description "Install and configure polybar.")))
 
-					; bspwm
+                                        ; bspwm
 
 (define* (mixed-executable-text-file name #:rest text)
   "Return an object representing an executable store file NAME containing TEXT.
@@ -69,7 +65,7 @@ This is the declarative counterpart of 'text-file*'."
   (define build
     (gexp (call-with-output-file (ungexp output "out")
             (lambda (port)
-	      (chmod port #o555)
+              (chmod port #o555)
               (display (string-append (ungexp-splicing text)) port)))))
 
   (computed-file name build))
@@ -87,11 +83,11 @@ This is the declarative counterpart of 'text-file*'."
 
 (define (add-bspwm-files config)
   (let ((bspwmrc (serialize-text-config
-		  #f
-		  (home-bspwm-configuration-bspwmrc config))))
+                  #f
+                  (home-bspwm-configuration-bspwmrc config))))
     `(("config/bspwm/bspwmrc" ,(mixed-executable-text-file
- 				"bspwmrc"
-				bspwmrc)))))
+                                "bspwmrc"
+                                bspwmrc)))))
 
 (define home-bspwm-service-type
   (service-type (name 'home-bspwm)
@@ -105,7 +101,7 @@ This is the declarative counterpart of 'text-file*'."
                 (description "Install and configure the binary space
 partitioning window manager.")))
 
-					; sxhkd
+                                        ; sxhkd
 
 (define-configuration/no-serialization home-sxhkd-configuration
   (package
@@ -120,11 +116,11 @@ partitioning window manager.")))
 
 (define (add-sxhkd-files config)
   (let ((sxhkdrc (serialize-text-config
-		  #f
-		  (home-sxhkd-configuration-sxhkdrc config))))
+                  #f
+                  (home-sxhkd-configuration-sxhkdrc config))))
     `(("config/sxhkd/sxhkdrc" ,(mixed-text-file
- 				"sxhkdrc"
-				sxhkdrc)))))
+                                "sxhkdrc"
+                                sxhkdrc)))))
 
 (define home-sxhkd-service-type
   (service-type (name 'home-sxhkd)
@@ -132,13 +128,13 @@ partitioning window manager.")))
                  (list (service-extension
                         home-profile-service-type
                         add-sxhkd-package)
-		       (service-extension
+                       (service-extension
                         home-files-service-type
                         add-sxhkd-files)))
                 (description "Install and configure the simple X11 hotkey
 daemon.")))
 
-					; xfce
+                                        ; xfce
 
 ;; (define-configuration/no-serialization home-xfce-configuration
 ;;   (package
@@ -149,20 +145,19 @@ daemon.")))
 ;;   
 ;;   (server-mode?
 ;;    (boolean #f)
-;;    "Create a shepherd service, which starts a flameshot deamon."))
-;;  
+;;
 ;; (define (add-xfce-packages config)
 ;;   (map specification->package
 ;;        (list
-;; 	"xfce"
-;; 	"xfce4-session"
-;; 	"xfconf"
-;; 	"xfce4-battery-plugin"
-;; 	"xfce4-volumed-pulse"
-;; 	"xfce4-notifyd"
-;; 	"pulseaudio"
-;; 	"xbacklight"
-;; 	"pavucontrol")))
+;;      "xfce"
+;;      "xfce4-session"
+;;      "xfconf"
+;;      "xfce4-battery-plugin"
+;;      "xfce4-volumed-pulse"
+;;      "xfce4-notifyd"
+;;      "pulseaudio"
+;;      "xbacklight"
+;;      "pavucontrol")))
 ;; 
 
 ;;(define xfce-desktop-service-type
@@ -177,5 +172,3 @@ daemon.")))
 ;;     ))
 ;;   (default-value (xfce-desktop-configuration))
 ;;   (description "Run the Xfce desktop environment.")))
- 
- 
