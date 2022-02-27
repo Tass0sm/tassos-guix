@@ -95,10 +95,10 @@
 Emacs' support for dynamic modules.")
     (license license:bsd-3)))
 
-(define-public rust-emacs-0.17
+(define-public rust-emacs-0.18
   (package
     (name "rust-emacs")
-    (version "0.17.0")
+    (version "0.18.0")
     (source
      (origin
        (method url-fetch)
@@ -107,7 +107,7 @@ Emacs' support for dynamic modules.")
 	(string-append name "-" version ".tar.gz"))
        (sha256
 	(base32
-	 "02f31apvz03dr0dwn5wyirdmqkk2d635iki0kmsh291xr6dysy2q"))))
+	 "0r860i73b2680i2fhdl2l1wwvvmf2zksncpckgkksdcx310ak5v7"))))
     (build-system cargo-build-system)
     (inputs
      `(("clang" ,clang)))
