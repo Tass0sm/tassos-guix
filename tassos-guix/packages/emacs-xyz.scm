@@ -98,8 +98,8 @@ details.")
        #:cargo-inputs
        (("rust-emacs" ,rust-emacs-0.18)
         ("rust-libloading" ,rust-libloading-0.7)
-        ("rust-tree-sitter" ,rust-tree-sitter-0.19)
-        ("rust-once-cell" ,rust-once-cell-1))))
+        ("rust-tree-sitter" ,rust-tree-sitter-0.20)
+        ("rust-once-cell" ,rust-once-cell-1.7))))
     (native-inputs (list clang-12))
     (home-page "https://github.com/emacs-tree-sitter/elisp-tree-sitter")
     (synopsis "Core Tree-sitter APIs")
@@ -308,5 +308,3 @@ See the accompanying Readme.org for configuration details.
      "This library implements an HTML back-end for the Org generic exporter,
 producing output appropriate for Haunt's @code{html-reader}.")
     (license license:gpl3+)))
-
-emacs-tree-sitter

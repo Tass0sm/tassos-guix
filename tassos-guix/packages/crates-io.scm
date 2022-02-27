@@ -70,10 +70,10 @@
 	("rust-shlex" ,rust-shlex-0.1))
        #:skip-build? #t))))
 
-(define-public rust-emacs-module-0.16.2
+(define-public rust-emacs-module-0.18
   (package
     (name "rust-emacs-module")
-    (version "0.16.2")
+    (version "0.18.0")
     (source
      (origin
        (method url-fetch)
@@ -82,7 +82,7 @@
 	(string-append name "-" version ".tar.gz"))
        (sha256
 	(base32
-	 "0s8qrh0ggjmqr04zkcf7s4ijmpd44rjcag78npnq64jv10lxvsry"))))
+	 "1ypjyyv2ca3vza4sia91ckxamgfk63yd8frkvg3d4ph4fk4pn1mk"))))
     (build-system cargo-build-system)
     (inputs
      `(("clang" ,clang)))
@@ -116,7 +116,7 @@ Emacs' support for dynamic modules.")
        (("rust-anyhow" ,rust-anyhow-1)
 	("rust-ctor" ,rust-ctor-0.1)
 	("rust-emacs-macros" ,rust-emacs-macros-0.17)
-	("rust-emacs-module" ,rust-emacs-module-0.16.2)
+	("rust-emacs-module" ,rust-emacs-module-0.18)
 	("rust-failure" ,rust-failure-0.1)
 	("rust-failure-derive" ,rust-failure-derive-0.1)
 	("rust-lazy-static" ,rust-lazy-static-1)
@@ -315,10 +315,10 @@ Emacs' support for dynamic modules.")
     (description "Recursively walk a directory.")
     (license (list license:unlicense license:expat))))
 
-(define-public rust-tree-sitter-0.19
+(define-public rust-tree-sitter-0.20
   (package
     (name "rust-tree-sitter")
-    (version "0.19.5")
+    (version "0.20.4")
     (source
      (origin
        (method url-fetch)
@@ -327,7 +327,7 @@ Emacs' support for dynamic modules.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1h6adq5kqf4izzsklch5lfxx2aisxga463zz7w44rgwnck16wwmd"))))
+         "16p3kysfzfgd8nyagfs2l8jpfdhr5cdlg0kk0czmwm5cirzk4d2f"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -343,3 +343,27 @@ Emacs' support for dynamic modules.")
     (description
      "Rust bindings to the Tree-sitter parsing library")
     (license license:expat)))
+
+(define-public rust-once-cell-1.7
+  (package
+    (name "rust-once-cell")
+    (version "1.7.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "once-cell" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "18qmpyfigg4ibdhjy5mwcjhzk9adwlgfaqv7nj430ivm86q0i2xg"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-parking-lot" ,rust-parking-lot-0.11))
+        #:cargo-development-inputs
+        (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
+         ("rust-lazy-static" ,rust-lazy-static-1)
+         ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/matklad/once_cell")
+    (synopsis "Single assignment cells and lazy values.")
+    (description "Single assignment cells and lazy values.")
+    (license (list license:expat license:asl2.0))))
