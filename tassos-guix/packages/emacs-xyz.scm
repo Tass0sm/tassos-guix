@@ -308,3 +308,87 @@ See the accompanying Readme.org for configuration details.
      "This library implements an HTML back-end for the Org generic exporter,
 producing output appropriate for Haunt's @code{html-reader}.")
     (license license:gpl3+)))
+
+(define-public emacs-magit-section
+  (package
+    (name "emacs-magit-section")
+    (version "20220326.1956")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/magit/magit.git")
+             (commit "29f5be3576ce031f90eb9637dd3bd8ec627d53f4")))
+       (sha256
+        (base32 "00260hm786j4xwqaqjclys287523ypzfj7vvd53pi5mlg0jgkiyp"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-dash))
+    (arguments
+     '(#:include
+       '("^lisp/magit-section.el$"
+         "^lisp/magit-section-pkg.el$"
+         "^docs/magit-section.texi$"
+         "^Documentation/magit-section.texi$")
+       #:exclude
+       '()))
+    (home-page "https://github.com/magit/magit")
+    (synopsis "Sections for read-only buffers")
+    (description
+     "This package implements the main user interface of Magit — the collapsible
+sections that make up its buffers.  This package used to be distributed as part
+of Magit but now it can also be used by other packages that have nothing to do
+with Magit or Git.")
+    (license #f)))
+
+(define-public emacs-bufler
+  (package
+   (name "emacs-bufler")
+   (version "20210907.1145")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/alphapapa/bufler.el.git")
+           (commit "a68e0eb2719c67ab8a3ad56c4036364061d06004")))
+     (sha256
+      (base32 "155g4p2yw88cpc8ydfzybc4r6ab2qwcmzdwkrrhnra4psimahjq6"))))
+   (build-system emacs-build-system)
+   (propagated-inputs
+    (list emacs-dash emacs-f emacs-pretty-hydra emacs-magit-section emacs-map))
+   (arguments
+    '(#:include
+      '("^[^/]+.el$"
+        "^[^/]+.el.in$"
+        "^dir$"
+        "^[^/]+.info$"
+        "^[^/]+.texi$"
+        "^[^/]+.texinfo$"
+        "^doc/dir$"
+        "^doc/[^/]+.info$"
+        "^doc/[^/]+.texi$"
+        "^doc/[^/]+.texinfo$")
+      #:exclude
+      '("^.dir-locals.el$"
+        "^test.el$"
+        "^tests.el$"
+        "^[^/]+-test.el$"
+        "^[^/]+-tests.el$"
+        "^helm-bufler.el$")
+      #:phases
+      (modify-phases %standard-phases
+        ;; Compilation doesn't work.
+        (delete 'build))))
+   (home-page "https://github.com/alphapapa/bufler.el")
+   (synopsis "Group buffers into workspaces with programmable rules")
+   (description
+    "Bufler is like a butler for your buffers, presenting them to you in an organized
+way based on your instructions.  The instructions are written as grouping rules
+in a simple language, allowing you to customize the way buffers are grouped.
+The default rules are designed to be generally useful, so you don't have to
+write your own.
+
+It also provides a workspace mode which allows frames to focus on buffers in
+certain groups.  Since the groups are created automatically, the workspaces are
+created dynamically, rather than requiring you to put buffers in workspaces
+manually.")
+   (license #f)))
