@@ -10,31 +10,6 @@
   #:use-module (guix build-system cargo)
   #:use-module ((guix licenses) #:prefix license:))
 
-(define-public rust-emacs-macros-0.17
-  (package
-    (name "rust-emacs-macros")
-    (version "0.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "emacs-macros" version))
-       (file-name
-	(string-append name "-" version ".tar.gz"))
-       (sha256
-	(base32
-	 "0qg1dcn5acbirq617qq2fgg9adswif2dnr292s3qnq62wzgnyrb9"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-darling" ,rust-darling-0.10)
-	("rust-proc-macro2" ,rust-proc-macro2-1)
-	("rust-quote" ,rust-quote-1)
-	("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/ubolonton/emacs-module-rs")
-    (synopsis "Proc macros for Emacs modules")
-    (description "This package provides proc macros for Emacs modules.")
-    (license license:bsd-3)))
-
 (define-public rust-bindgen-0.56
   (package
     (inherit rust-bindgen-0.57)
@@ -70,88 +45,30 @@
 	("rust-shlex" ,rust-shlex-0.1))
        #:skip-build? #t))))
 
-(define-public rust-emacs-module-0.18
-  (package
-    (name "rust-emacs-module")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "emacs_module" version))
-       (file-name
-	(string-append name "-" version ".tar.gz"))
-       (sha256
-	(base32
-	 "1ypjyyv2ca3vza4sia91ckxamgfk63yd8frkvg3d4ph4fk4pn1mk"))))
-    (build-system cargo-build-system)
-    (inputs
-     `(("clang" ,clang)))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.56))))
-    (home-page "https://github.com/ubolonton/emacs-module-rs")
-    (synopsis "Raw FFI for emacs-module")
-    (description "This module provides a high-level binding to emacs-module:
-Emacs' support for dynamic modules.")
-    (license license:bsd-3)))
-
-(define-public rust-emacs-0.18
-  (package
-    (name "rust-emacs")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "emacs" version))
-       (file-name
-	(string-append name "-" version ".tar.gz"))
-       (sha256
-	(base32
-	 "0r860i73b2680i2fhdl2l1wwvvmf2zksncpckgkksdcx310ak5v7"))))
-    (build-system cargo-build-system)
-    (inputs
-     `(("clang" ,clang)))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-	("rust-ctor" ,rust-ctor-0.1)
-	("rust-emacs-macros" ,rust-emacs-macros-0.17)
-	("rust-emacs-module" ,rust-emacs-module-0.18)
-	("rust-failure" ,rust-failure-0.1)
-	("rust-failure-derive" ,rust-failure-derive-0.1)
-	("rust-lazy-static" ,rust-lazy-static-1)
-	("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/ubolonton/emacs-module-rs")
-    (synopsis "Library for creating Emacs's dynamic modules")
-    (description
-     "This crate provides a high level binding to emacs-module:
-Emacs' support for dynamic modules.")
-    (license license:bsd-3)))
-
 (define-public rust-spin-0.7
-(package
-(name "rust-spin")
-(version "0.7.1")
-(source
-(origin
-  (method url-fetch)
-  (uri (crate-uri "spin" version))
-  (file-name
-   (string-append name "-" version ".tar.gz"))
-  (sha256
-   (base32
-    "0qjips9f6fsvkyd7wj3a4gzaqknn2q4kkb19957pl86im56pna0k"))))
-(build-system cargo-build-system)
-(arguments
-`(#:cargo-inputs
-  (("rust-lock-api" ,rust-lock-api-0.4))))
-(home-page
-"https://github.com/mvdnes/spin-rs.git")
-(synopsis
-"Spin-based synchronization primitives")
-(description
-"Spin-based synchronization primitives")
-(license license:expat)))
+  (package
+    (name "rust-spin")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "spin" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0qjips9f6fsvkyd7wj3a4gzaqknn2q4kkb19957pl86im56pna0k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-lock-api" ,rust-lock-api-0.4))))
+    (home-page
+     "https://github.com/mvdnes/spin-rs.git")
+    (synopsis
+     "Spin-based synchronization primitives")
+    (description
+     "Spin-based synchronization primitives")
+    (license license:expat)))
 
 (define-public rust-html-escape-0.2
   (package

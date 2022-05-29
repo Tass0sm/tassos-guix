@@ -13,63 +13,6 @@
   #:use-module (guix build-system cargo)
   #:use-module ((guix licenses) #:prefix license:))
 
-(define-public emacs-popper
-  (package
-    (name "emacs-popper")
-    (version "20220126.844")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/karthink/popper.git")
-                    (commit "a50edecacf2939fc50ad2bc48f1015486a09f885")))
-              (sha256
-               (base32
-                "0p12zz2lhm10yikhnq52z66xwy64gcvig42bzajv5q7x09qvvna7"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/karthink/popper")
-    (synopsis "Summon and dismiss buffers as popups")
-    (description
-     "Popper is a minor-mode to tame the flood of ephemeral windows Emacs produces,
-while still keeping them within arm's reach.  Designate any buffer to \"popup\"
-status, and it will stay out of your way.  Disimss or summon it easily with one
-key.  Cycle through all your \"popups\" or just the ones relevant to your current
-buffer.  Useful for many things, including toggling display of REPLs,
-documentation, compilation or shell output, etc.
-
-For a demo describing usage and customization see
-https://www.youtube.com/watch?v=E-xUNlZi3rI
-
-COMMANDS:
-
-popper-mode          : Turn on popup management popper-toggle-latest : Toggle
-latest popup popper-cycle         : Cycle through all popups, or close all open
-popups popper-toggle-type   : Turn a regular window into a popup or vice-versa
-popper-kill-latest-popup : Kill latest open popup
-
-CUSTOMIZATION:
-
-`popper-reference-buffers': A list of major modes or regexps whose corresponding
-buffer major-modes or regexps (respectively) should be treated as popups.
-
-`popper-mode-line': String or sexp to show in the mode-line of popper.  Setting
-this to nil removes the mode-line entirely from popper.
-
-`popper-group-function': Function that returns the context a popup should be
-shown in.  The context is a string or symbol used to group together a set of
-buffers and their associated popups, such as the project root.  Customize for
-available options.
-
-`popper-display-control': This package summons windows defined by the user as
-popups by simply calling `display-buffer'.  By default, it will display your
-popups in a non-obtrusive way.  If you want Popper to display popups according
-to window rules you specify in `display-buffer-alist' (or through a package like
-Shackle), set this variable to nil.
-
-There are other customization options, such as the ability to suppress certain
-popups and keep them from showing.  Please customize the popper group for
-details.")
-    (license #f)))
-
 (define-public emacs-tsc-module
   (package
     (name "emacs-tsc-module")
@@ -79,7 +22,7 @@ details.")
       (method url-fetch)
       (uri (string-append "https://melpa.org/packages/tsc-" version ".tar"))
       (sha256
-       (base32 "1aa24krayk7f6rzhi1vgs8vixa7i5q9j9xlbv7sma854w9ssswnc"))))
+       (base32 "0x44ar4dkp0f2bkd5ha232gplj8wbmaf788myfk8471vn9xcmvb4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -95,12 +38,12 @@ details.")
                       ;; Copy the dynamic module result to the output.
                       (install-file "target/release/libtsc_dyn.so"
                                     (assoc-ref outputs "out")) #t)))
-       #:cargo-inputs
+       #:cargo-development-inputs
        (("rust-emacs" ,rust-emacs-0.18)
         ("rust-libloading" ,rust-libloading-0.7)
         ("rust-tree-sitter" ,rust-tree-sitter-0.20)
-        ("rust-once-cell" ,rust-once-cell-1.7))))
-    (native-inputs (list clang-12))
+        ;; ("rust-once-cell" ,rust-once-cell-1.7)
+        )))
     (home-page "https://github.com/emacs-tree-sitter/elisp-tree-sitter")
     (synopsis "Core Tree-sitter APIs")
     (description
@@ -374,10 +317,11 @@ with Magit or Git.")
         "^[^/]+-test.el$"
         "^[^/]+-tests.el$"
         "^helm-bufler.el$")
-      #:phases
-      (modify-phases %standard-phases
-        ;; Compilation doesn't work.
-        (delete 'build))))
+      ;; #:phases
+      ;; (modify-phases %standard-phases
+      ;;   ;; Compilation doesn't work.
+      ;;   (delete 'build))
+      ))
    (home-page "https://github.com/alphapapa/bufler.el")
    (synopsis "Group buffers into workspaces with programmable rules")
    (description

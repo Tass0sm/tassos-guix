@@ -35,11 +35,11 @@
   (list (home-polybar-configuration-package config)))
 
 (define (add-polybar-files config)
-  `(("config/polybar/config" ,(mixed-text-file
-                               "config"
-                               (serialize-text-config
-                                #f
-                                (home-polybar-configuration-config config))))))
+  `((".config/polybar/config" ,(mixed-text-file
+                                "config"
+                                (serialize-text-config
+                                 #f
+                                 (home-polybar-configuration-config config))))))
 
 (define home-polybar-service-type
   (service-type (name 'home-polybar)
@@ -85,9 +85,9 @@ This is the declarative counterpart of 'text-file*'."
   (let ((bspwmrc (serialize-text-config
                   #f
                   (home-bspwm-configuration-bspwmrc config))))
-    `(("config/bspwm/bspwmrc" ,(mixed-executable-text-file
-                                "bspwmrc"
-                                bspwmrc)))))
+    `((".config/bspwm/bspwmrc" ,(mixed-executable-text-file
+                                 "bspwmrc"
+                                 bspwmrc)))))
 
 (define home-bspwm-service-type
   (service-type (name 'home-bspwm)
@@ -118,9 +118,9 @@ partitioning window manager.")))
   (let ((sxhkdrc (serialize-text-config
                   #f
                   (home-sxhkd-configuration-sxhkdrc config))))
-    `(("config/sxhkd/sxhkdrc" ,(mixed-text-file
-                                "sxhkdrc"
-                                sxhkdrc)))))
+    `((".config/sxhkd/sxhkdrc" ,(mixed-text-file
+                                 "sxhkdrc"
+                                 sxhkdrc)))))
 
 (define home-sxhkd-service-type
   (service-type (name 'home-sxhkd)

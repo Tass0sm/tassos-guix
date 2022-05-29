@@ -25,7 +25,7 @@
   (list (home-dunst-configuration-package config)))
 
 (define (add-dunst-files config)
-  `(("config/dunst/dunstrc" ,(mixed-text-file
+  `((".config/dunst/dunstrc" ,(mixed-text-file
  			       "dunstrc"
 			       (serialize-text-config
 				#f
