@@ -1,6 +1,8 @@
 (define-module (tassos-guix packages emacs-xyz)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages rust)
+  #:use-module (gnu packages emacs)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages emacs-xyz)
@@ -9,111 +11,10 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system cargo)
   #:use-module ((guix licenses) #:prefix license:))
-
-(define-public emacs-tsc-module
-  (package
-    (name "emacs-tsc-module")
-    (version "20220212.1632")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "https://melpa.org/packages/tsc-" version ".tar"))
-      (sha256
-       (base32 "0x44ar4dkp0f2bkd5ha232gplj8wbmaf788myfk8471vn9xcmvb4"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack-rust-crates 'remove-patch-section
-                    (lambda _
-                      ;; Remove the patch section from Cargo.toml
-                      (substitute* "Cargo.toml"
-                        (("\\[patch.crates-io.tree-sitter]") "")
-                        (("git = \"https://github.com/tree-sitter/tree-sitter\"")
-                         "")) #t))
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Copy the dynamic module result to the output.
-                      (install-file "target/release/libtsc_dyn.so"
-                                    (assoc-ref outputs "out")) #t)))
-       #:cargo-development-inputs
-       (("rust-emacs" ,rust-emacs-0.18)
-        ("rust-libloading" ,rust-libloading-0.7)
-        ("rust-tree-sitter" ,rust-tree-sitter-0.20)
-        ;; ("rust-once-cell" ,rust-once-cell-1.7)
-        )))
-    (home-page "https://github.com/emacs-tree-sitter/elisp-tree-sitter")
-    (synopsis "Core Tree-sitter APIs")
-    (description
-     "This is the core APIs of the Emacs binding for Tree-sitter, an incremental
-parsing system.
-")
-    (license #f)))
-
-(define-public emacs-tsc
-  (package
-   (name "emacs-tsc")
-   (version "20220212.1632")
-   (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://melpa.org/packages/tsc-" version ".tar"))
-       (sha256
-        (base32 "1aa24krayk7f6rzhi1vgs8vixa7i5q9j9xlbv7sma854w9ssswnc"))))
-   (build-system emacs-build-system)
-   (arguments
-    `(#:include
-      '("^[^/]*\\.el$" "^tsc-dyn.so$" "^DYN-VERSION$" "^[^/]*\\.info$" "^doc/.*\\.info$")
-      #:phases
-      (modify-phases %standard-phases
-                     (add-after 'unpack 'add-local-dynamic-module
-                                (lambda* (#:key inputs #:allow-other-keys)
-                                  (copy-recursively
-                                   (assoc-ref inputs "emacs-tsc-module") ".")
-                                  (rename-file "./libtsc_dyn.so" "./tsc-dyn.so")
-                                  (let ((port (open-output-file "DYN-VERSION")))
-                                    (display "LOCAL" port)
-                                    (close-port port))
-                                  #t)))))
-   (native-inputs
-    (list emacs-tsc-module))
-   (home-page "https://github.com/emacs-tree-sitter/elisp-tree-sitter")
-   (synopsis "Core Tree-sitter APIs")
-   (description
-    "This is the core APIs of the Emacs binding for Tree-sitter, an incremental
-parsing system.")
-   (license #f)))
-
-(define-public emacs-tree-sitter
-  (package
-   (name "emacs-tree-sitter")
-   (version "20220212.1632")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/emacs-tree-sitter/elisp-tree-sitter.git")
-           (commit "3cfab8a0e945db9b3df84437f27945746a43cc71")))
-     (sha256
-      (base32 "0flqsf3nly7s261vss56havss13psgbw98612yj2xkfk9sydia28"))))
-   (build-system emacs-build-system)
-   (propagated-inputs (list emacs-tsc))
-   (arguments
-    '(#:include
-      '("^lisp/[^/]+.el$")
-      #:exclude
-      '("^lisp/tree-sitter-tests.el$")))
-   (home-page "https://github.com/emacs-tree-sitter/elisp-tree-sitter")
-   (synopsis "Incremental parsing system")
-   (description
-    "This is the base framework of the Emacs binding for Tree-sitter, an incremental
-parsing system.  It includes a minor mode that provides a buffer-local syntax
-tree that is updated on every text change.  This minor mode is the base for
-other libraries to build on.  An example is the included code-highlighting minor
-mode.")
-   (license #f)))
 
 (define-public emacs-reazon
   (package
@@ -145,59 +46,6 @@ That interface consists of the following macros:
 * reazon-project
 
 Besides these, there is a single primitive goal, reazon-==.
-")
-   (license #f)))
-
-(define-public emacs-tree-edit
-  (package
-   (name "emacs-tree-edit")
-   (version "20211209.2258")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/ethan-leba/tree-edit.git")
-           (commit "6f544be43e24a3b2f9aca7cba1bd960bb824605d")))
-     (sha256
-      (base32 "14k39ngsxv35k4lvl2qgxrr6pjinz3r618f9b4lrw07rr46p0637"))))
-   (build-system emacs-build-system)
-   (propagated-inputs
-    `(("emacs-tree-sitter" ,emacs-tree-sitter)
-      ("emacs-tsc" ,emacs-tsc)
-      ;; ("emacs-tree-sitter-langs" ,emacs-tree-sitter-langs)
-      ("emacs-dash" ,emacs-dash)
-      ("emacs-reazon" ,emacs-reazon)
-      ("emacs-s" ,emacs-s)))
-   (arguments
-    '(#:include
-      '("^[^/]+.el$"
-        "^[^/]+.el.in$"
-        "^dir$"
-        "^[^/]+.info$"
-        "^[^/]+.texi$"
-        "^[^/]+.texinfo$"
-        "^doc/dir$"
-        "^doc/[^/]+.info$"
-        "^doc/[^/]+.texi$"
-        "^doc/[^/]+.texinfo$")
-      #:exclude
-      '("^.dir-locals.el$"
-        "^test.el$"
-        "^tests.el$"
-        "^[^/]+-test.el$"
-        "^[^/]+-tests.el$"
-        "^evil-tree-edit.el$")))
-   (home-page "https://github.com/ethan-leba/tree-edit")
-   (synopsis "A library for structural refactoring and editing")
-   (description
-    "
-Provides a set of functions for structural editing or refactoring in any
-language supported by tree-sitter.
-
-The interface for this package is currently unstable, developing against it is
-unadvised!
-
-See `evil-tree-edit' if you're looking for a complete editing package.
 ")
    (license #f)))
 
