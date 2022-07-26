@@ -133,47 +133,35 @@ with Magit or Git.")
 
 (define-public emacs-bufler
   (package
-   (name "emacs-bufler")
-   (version "20210907.1145")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/alphapapa/bufler.el.git")
-           (commit "a68e0eb2719c67ab8a3ad56c4036364061d06004")))
-     (sha256
-      (base32 "155g4p2yw88cpc8ydfzybc4r6ab2qwcmzdwkrrhnra4psimahjq6"))))
-   (build-system emacs-build-system)
-   (propagated-inputs
-    (list emacs-dash emacs-f emacs-pretty-hydra emacs-magit-section emacs-map))
-   (arguments
-    '(#:include
-      '("^[^/]+.el$"
-        "^[^/]+.el.in$"
-        "^dir$"
-        "^[^/]+.info$"
-        "^[^/]+.texi$"
-        "^[^/]+.texinfo$"
-        "^doc/dir$"
-        "^doc/[^/]+.info$"
-        "^doc/[^/]+.texi$"
-        "^doc/[^/]+.texinfo$")
-      #:exclude
-      '("^.dir-locals.el$"
-        "^test.el$"
-        "^tests.el$"
-        "^[^/]+-test.el$"
-        "^[^/]+-tests.el$"
-        "^helm-bufler.el$")
-      ;; #:phases
-      ;; (modify-phases %standard-phases
-      ;;   ;; Compilation doesn't work.
-      ;;   (delete 'build))
-      ))
-   (home-page "https://github.com/alphapapa/bufler.el")
-   (synopsis "Group buffers into workspaces with programmable rules")
-   (description
-    "Bufler is like a butler for your buffers, presenting them to you in an organized
+    (name "emacs-bufler")
+    (version "20220726.1658")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alphapapa/bufler.el.git")
+                    (commit "5e8f02c3a454d6d43c18851023d6ac6ae470c31f")))
+              (sha256
+               (base32
+                "1m7x5zksjfyh254mvsl9va5jqr76niyf54djjiacnrlpqnn3bf2s"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-dash emacs-f emacs-pretty-hydra
+                             emacs-magit emacs-map))
+    (arguments
+     '(#:include '("^[^/]+.el$" "^[^/]+.el.in$"
+                   "^dir$"
+                   "^[^/]+.info$"
+                   "^[^/]+.texi$"
+                   "^[^/]+.texinfo$"
+                   "^doc/dir$"
+                   "^doc/[^/]+.info$"
+                   "^doc/[^/]+.texi$"
+                   "^doc/[^/]+.texinfo$")
+       #:exclude '("^.dir-locals.el$" "^test.el$" "^tests.el$" "^[^/]+-test.el$"
+                   "^[^/]+-tests.el$" "^helm-bufler.el$")))
+    (home-page "https://github.com/alphapapa/bufler.el")
+    (synopsis "Group buffers into workspaces with programmable rules")
+    (description
+     "Bufler is like a butler for your buffers, presenting them to you in an organized
 way based on your instructions.  The instructions are written as grouping rules
 in a simple language, allowing you to customize the way buffers are grouped.
 The default rules are designed to be generally useful, so you don't have to
