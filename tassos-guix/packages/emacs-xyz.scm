@@ -171,4 +171,149 @@ It also provides a workspace mode which allows frames to focus on buffers in
 certain groups.  Since the groups are created automatically, the workspaces are
 created dynamically, rather than requiring you to put buffers in workspaces
 manually.")
-   (license #f)))
+    (license #f)))
+
+(define-public emacs-haskell-mode-latest
+  (package
+    (name "emacs-haskell-mode-latest")
+    (version "17.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/haskell/haskell-mode")
+             (commit "5a9f8072c7b9168f0a8409adf9d62a3e4ad4ea3d")))
+       (sha256
+        (base32 "0np1wrwdq7b9hpqpl9liampacnkx6diphyk8h2sbz2mfn9qr7pxs"))))
+    (propagated-inputs
+     (list emacs-dash))
+    (native-inputs
+     (list emacs-minimal emacs-el-search emacs-stream texinfo))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list
+                      (string-append "EMACS=" #$emacs-minimal "/bin/emacs"))
+      #:modules `((ice-9 match)
+                  (srfi srfi-26)
+                  ((guix build emacs-build-system) #:prefix emacs:)
+                  ,@%gnu-build-system-modules)
+      #:imported-modules `(,@%gnu-build-system-modules
+                           (guix build emacs-build-system)
+                           (guix build emacs-utils))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'pre-build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (el-dir store-dir)
+                (match (find-files store-dir "\\.el$")
+                  ((f1 f2 ...) (dirname f1))
+                  (_ "")))
+
+              (let ((sh (search-input-file inputs "/bin/sh")))
+                (define emacs-prefix? (cut string-prefix? "emacs-" <>))
+
+                (setenv "SHELL" "sh")
+                (setenv "EMACSLOADPATH"
+                        (string-concatenate
+                         (map (match-lambda
+                                (((? emacs-prefix? name) . dir)
+                                 (string-append (el-dir dir) ":"))
+                                (_ ""))
+                              inputs)))
+                (substitute* (find-files "." "\\.el") (("/bin/sh") sh)))))
+          (add-before 'check 'delete-failing-tests
+            ;; XXX: these tests require GHC executable, which would be a big
+            ;; native input.
+            (lambda _
+              (with-directory-excursion "tests"
+                ;; File `haskell-indent-tests.el' fails with
+                ;; `haskell-indent-put-region-in-literate-2'
+                ;; on Emacs 27.1+
+                ;; XXX: https://github.com/haskell/haskell-mode/issues/1714
+                (for-each delete-file
+                          '("haskell-indent-tests.el"
+                            "haskell-customize-tests.el"
+                            "inferior-haskell-tests.el")))))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (el-dir (emacs:elpa-directory out))
+                     (doc (string-append
+                           out "/share/doc/haskell-mode-" #$version))
+                     (info (string-append out "/share/info")))
+                (define (copy-to-dir dir files)
+                  (for-each (lambda (f)
+                              (install-file f dir))
+                            files))
+
+                (with-directory-excursion "doc"
+                  (invoke "makeinfo" "haskell-mode.texi")
+                  (install-file "haskell-mode.info" info))
+                (copy-to-dir doc '("CONTRIBUTING.md" "NEWS" "README.md"))
+                (copy-to-dir el-dir (find-files "." "\\.elc?"))))))))
+    (home-page "https://github.com/haskell/haskell-mode")
+    (synopsis "Haskell mode for Emacs")
+    (description
+     "This is an Emacs mode for editing, debugging and developing Haskell
+programs.")
+    (license license:gpl3+)))
+
+(define-public emacs-engrave-faces
+  (package
+    (name "emacs-engrave-faces")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/engrave-faces-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "1q4sjl2rvcfwcirm32nmi53258ln71yhh1dgszlxwknm38a14v3i"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/tecosaur/engrave-faces")
+    (synopsis "Convert font-lock faces to other formats")
+    (description
+     "This package aims to produce a versatile generic core which can process a
+fontified buffer and elegantly pass the data to any number of backends which can
+deal with specific output formats.")
+    (license license:gpl3+)))
+
+(define-public emacs-org-analyzer
+  (package
+    (name "emacs-org-analyzer")
+    (version "20191001.1717")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rksm/clj-org-analyzer.git")
+                    (commit "19da62aa4dcf1090be8f574f6f2d4c7e116163a8")))
+              (sha256
+               (base32
+                "1zfc93z6w5zvbqiypqvbnyv8ims1wgpcp61z1s152d0nq2y4pf50"))))
+    (build-system emacs-build-system)
+    (arguments
+     '(#:include '("^[^/]+.jar$" "^[^/]+.el$")
+       #:exclude '()
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'enter-lisp-directory
+           (lambda _
+             (chdir "org-analyzer-el"))))))
+    (home-page "https://github.com/rksm/clj-org-analyzer")
+    (synopsis
+     "org-analyzer is a tool that extracts time tracking data from org files.")
+    (description
+     "org-analyzer is a tool that extracts time tracking data from org files (time
+data recording with `org-clock-in', those lines that start with \"CLOCK:\").  It
+then creates an interactive visualization of that data — outside of Emacs(!).
+
+In order to run the visualizer / parser you need to have java installed.
+
+This Emacs package provides a simple way to start the visualizer via
+`org-analyzer-start' and feed it the default org files.
+
+See https://github.com/rksm/clj-org-analyzer for more information.")
+    (license #f)))
