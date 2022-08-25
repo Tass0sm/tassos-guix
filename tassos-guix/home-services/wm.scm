@@ -15,6 +15,7 @@
   #:export (home-polybar-configuration
             home-polybar-service-type
 
+            mixed-executable-text-file
             home-bspwm-configuration
             home-bspwm-service-type
 
@@ -35,11 +36,11 @@
   (list (home-polybar-configuration-package config)))
 
 (define (add-polybar-files config)
-  `((".config/polybar/config" ,(mixed-text-file
-                                "config"
-                                (serialize-text-config
-                                 #f
-                                 (home-polybar-configuration-config config))))))
+  `((".config/polybar/config.ini" ,(mixed-text-file
+                                    "config.ini"
+                                    (serialize-text-config
+                                     #f
+                                     (home-polybar-configuration-config config))))))
 
 (define home-polybar-service-type
   (service-type (name 'home-polybar)
