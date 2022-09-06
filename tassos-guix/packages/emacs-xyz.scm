@@ -317,3 +317,18 @@ This Emacs package provides a simple way to start the visualizer via
 
 See https://github.com/rksm/clj-org-analyzer for more information.")
     (license #f)))
+
+(define-public emacs-jupyter-next
+  (package
+    (inherit emacs-jupyter)
+    (name "emacs-jupyter-next")
+    (version "20220419.1852")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nnicandro/emacs-jupyter")
+             (commit "2c8a0d060567956065670e1dc32794875154f2e8")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l0kx27cqmxkjqyv2c6010ci5mml2lmp4xzi5dg0l8rc217hmz1g"))))))
