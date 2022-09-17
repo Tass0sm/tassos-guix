@@ -81,17 +81,17 @@ See the accompanying Readme.org for configuration details.
 
 (define-public emacs-ox-haunt
   (package
-    (name "emacs-ox-haunt")
-    (version "0.2")
+    (name "emacs-ox-haunt-latest")
+    (version "4d585c5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://git.sr.ht/~jakob/ox-haunt")
-             (commit (string-append "v" version))))
+             (commit "d32c4b1ab258dc34ca7e713152a274eab35d2608")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rs1n228c2fmpvirc57bqgf2616ijpphkgf4w9ln5j46snmkam25"))))
+        (base32 "1h5g32kw3dgdp3vdzx34n8pcmg3ssn2bzmx5an7yksymibmayfjs"))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~jakob/ox-haunt")
     (synopsis "Export Org files to HTML appropriate for Haunt")
