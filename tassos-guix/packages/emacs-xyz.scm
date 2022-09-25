@@ -261,26 +261,6 @@ manually.")
 programs.")
     (license license:gpl3+)))
 
-(define-public emacs-engrave-faces
-  (package
-    (name "emacs-engrave-faces")
-    (version "0.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://elpa.gnu.org/packages/engrave-faces-"
-                                  version ".tar"))
-              (sha256
-               (base32
-                "1q4sjl2rvcfwcirm32nmi53258ln71yhh1dgszlxwknm38a14v3i"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/tecosaur/engrave-faces")
-    (synopsis "Convert font-lock faces to other formats")
-    (description
-     "This package aims to produce a versatile generic core which can process a
-fontified buffer and elegantly pass the data to any number of backends which can
-deal with specific output formats.")
-    (license license:gpl3+)))
-
 (define-public emacs-org-analyzer
   (package
     (name "emacs-org-analyzer")
