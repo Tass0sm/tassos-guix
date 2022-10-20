@@ -134,12 +134,12 @@ with Magit or Git.")
 (define-public emacs-bufler
   (package
     (name "emacs-bufler")
-    (version "20220726.1658")
+    (version "20221005")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/alphapapa/bufler.el.git")
-                    (commit "5e8f02c3a454d6d43c18851023d6ac6ae470c31f")))
+                    (commit "ba0157da21096e47b6048982e265f4b0a5351782")))
               (sha256
                (base32
                 "1m7x5zksjfyh254mvsl9va5jqr76niyf54djjiacnrlpqnn3bf2s"))))

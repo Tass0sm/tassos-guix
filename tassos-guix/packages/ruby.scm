@@ -53,7 +53,7 @@
     (description
      "WEBrick is an HTTP server toolkit that can be configured as an HTTPS server, a proxy server, and a virtual-host server.")
     (home-page "https://github.com/ruby/webrick")
-    (license (list #f #f))))
+    (license license:bsd-2)))
 
 (define ruby-console
   (package
@@ -476,7 +476,7 @@
     (description
      "This library helps write robots.txt compliant web robots in Ruby.")
     (home-page "https://github.com/knu/webrobots")
-    (license #f)))
+    (license license:bsd-2)))
 
 (define ruby-mechanize
   (package
