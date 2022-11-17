@@ -11,6 +11,78 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages compression))
 
+
+(define-public sbcl-qua
+  (let ((commit "1e64d867feb152b1c49447639579aa75211b3d48")
+        (revision "1"))
+    (package
+      (name "sbcl-qua")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hahahahaman/qua")
+               (commit commit)))
+         (file-name (git-file-name "qua" version))
+         (sha256
+          (base32 "1jc2w0bmg7ijvhypqibpbifs31n46ch0l8q78b7120mcq23wicai"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria sbcl-iterate))
+      (home-page "https://github.com/hahahahaman/qua")
+      (synopsis "")
+      (description "")
+      (license license:expat))))
+
+(define-public sbcl-easing
+  (let ((commit "1601a5f7413ba92c355d95a7d5200b648ddcdf35")
+        (revision "1"))
+    (package
+      (name "sbcl-easing")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vydd/easing")
+               (commit commit)))
+         (file-name (git-file-name "easing" version))
+         (sha256
+          (base32 "0750cs5kij8hi53960lzih57xrf92fj23i3hxzhqzcyla4wi4jv5"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria))
+      (home-page "https://github.com/vydd/easing")
+      (synopsis "")
+      (description "")
+      (license license:expat))))
+
+(define-public sbcl-nineveh
+  (let ((commit "0a10a84669cd9d1c584f54b9eab062986a5f1c47")
+        (revision "1"))
+    (package
+      (name "sbcl-nineveh")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cbaggers/nineveh")
+               (commit commit)))
+         (file-name (git-file-name "nineveh" version))
+         (sha256
+          (base32 "0bpdgqc9iz37240ypirpi489pnqpb92i94snyhjbh87i50y4br2l"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cepl sbcl-cl-soil sbcl-livesupport sbcl-easing
+             sbcl-documentation-utils sbcl-dendrite sbcl-real-rtg-math
+             sbcl-with-setf))
+      (home-page "https://github.com/cbaggers/nineveh")
+      (synopsis "")
+      (description "")
+      (license license:bsd-2))))
+
 (define-public sbcl-real-rtg-math
   (let ((commit "29fc5b3d0028a4a11a82355ecc8cca62662c69e0")
         (revision "1"))
