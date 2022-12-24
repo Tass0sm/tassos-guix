@@ -11,11 +11,16 @@
 (define-public cache-env
   (package
     (name "cache-env")
-    (version "0.1.0")
-    (source
-     (local-file "/home/tassosm/software/cache-env"
-                 #:recursive? #t
-                 #:select? (git-predicate "/home/tassosm/software/cache-env")))
+    (version "0.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Tass0sm/cache-env")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ylpg3dfahb5spsfqx8yjl554fa12dd30g8d12zwwljmagdv7hk7"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
@@ -25,7 +30,7 @@
     (description
      "Save and retrieve environment states. Useful for unloading guix
  profiles.")
-    (license license:expat)))
+    (license #f)))
 
 (define-public zsh-pure
   (package
