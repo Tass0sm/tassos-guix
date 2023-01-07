@@ -7,10 +7,11 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system asdf)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages graphics)
-  #:use-module (gnu packages compression))
-
+  #:use-module (gnu packages compression)
+  #:use-module (srfi srfi-1))
 
 (define-public sbcl-qua
   (let ((commit "1e64d867feb152b1c49447639579aa75211b3d48")
@@ -438,3 +439,47 @@ related funcs and macros. tlambda is a lambda with an internal concept of time."
       (synopsis "Macros for setting a place for the duration of a scope.")
       (description "with-setf provides 2 macros for setf'ing values for the duration of a scope.")
       (license license:expat))))
+
+(define-public sbcl-cl-openal
+  (package
+    (name "sbcl-cl-openal")
+    (version "1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zkat/cl-openal")
+             (commit "81596fe1898aa6b02be3cf7f592d347f8a981097")))
+       (sha256
+        (base32 "0jmp81mf23ckcm4knnh0q7zpmyls5220imaqbmnl0xvvra10b1zy"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (for-each
+                    (lambda (file)
+                      (substitute* file
+                        (("libopenal.so" all)
+                         (string-append
+                          #$openal "/lib/" all))))
+                    (list "al/bindings.lisp" "al/al.lisp" "alc/bindings.lisp" "alc/alc.lisp"))
+                   (for-each
+                    (lambda (file)
+                      (substitute* file
+                        (("libalut.so" all)
+                         (string-append
+                          #$freealut "/lib/" all))))
+                    (list "alut/bindings.lisp" "alut/alut.lisp"))
+                   #t)))
+           #:asd-systems
+           '(list "cl-openal-examples" "cl-openal" "cl-alc" "cl-alut")))
+    (inputs
+     (list openal freealut sbcl-alexandria sbcl-cffi))
+    (home-page "https://github.com/zkat/cl-openal")
+    (synopsis "Semi-lispy public domain bindings to the OpenAL.")
+    (description "cl-openal is a series of semi-lispy public domain bindings to the OpenAL
+API. It includes direct CFFI bindings, as well as varying levels of lispy
+wrappings around AL, ALC, and ALUT.")
+    (license license:public-domain)))
