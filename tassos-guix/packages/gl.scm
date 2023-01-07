@@ -11,7 +11,7 @@
   #:use-module ((guix licenses) #:prefix license:))
 
 (define-public libfond
-  (let ((commit "eaa9d9e6e84578410b2e538eafe28b515ba6ffea")
+  (let ((commit "02577826694d1f2cf865b0d408aedc5bc2d9623a")
         (revision "1"))
     (package
       (name "libfond")
@@ -24,18 +24,12 @@
                (commit commit)))
          (file-name (git-file-name "libfond" version))
          (sha256
-          (base32 "1v77kvkg6lb0cpynsp8rrynvjmbpljfiw0yc234pl49vf600qgcf"))))
+          (base32 "0lcrx5q8av8rrv1wd6myqxijihn9h9dkjraddmz1pw953jp54n1m"))))
       (build-system cmake-build-system)
       (arguments
        (list #:phases
              #~(modify-phases %standard-phases
-                 (add-after 'unpack 'make-variable-external
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (substitute* "src/fond_internal.h"
-                       (("int errorcode;" all)
-                        (string-append "extern " all)))
-                     #t))
-                 (add-after 'make-variable-external 'fix-install-destination
+                 (add-after 'unpack 'fix-install-destination
                    (lambda* (#:key inputs #:allow-other-keys)
                      (substitute* "CMakeLists.txt"
                        (("/usr/local" _) #$output))

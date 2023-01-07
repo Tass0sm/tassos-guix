@@ -11,6 +11,7 @@
   #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages compression)
+  #:use-module (tassos-guix packages gl)
   #:use-module (srfi srfi-1))
 
 (define-public sbcl-qua
@@ -110,6 +111,74 @@
       (description
        "RTG-MATH provides a selection of the math routines most commonly needed
 for making realtime graphics in Lisp.")
+      (license license:bsd-2))))
+
+(define-public sbcl-cl-fond
+  (package
+    (name "sbcl-cl-fond")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Shirakumo/cl-fond")
+             (commit "dac975cbc73f231b400d5b8d8539b16330239a4a")))
+       (file-name (git-file-name "cl-fond" version))
+       (sha256
+        (base32 "03ygcw1azb44bhdsqcq99xi4ci0by76ap5jf5l2d1vfxq04v8grq"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "low-level.lisp"
+                     (("libfond.so" all)
+                      (string-append
+                       #$libfond "/lib/" all)))
+                   #t)))))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-cffi
+           sbcl-trivial-features
+           sbcl-trivial-garbage
+           sbcl-documentation-utils
+           sbcl-cl-opengl))
+    (home-page "https://github.com/Shirakumo/cl-fond")
+    (synopsis "Bindings to libfond, a simple text rendering engine for OpenGL
+A helper library for using cl-fond with CEPL")
+    (description "Bindings to libfond, a simple text rendering engine for OpenGL
+A helper library for using cl-fond with CEPL")
+    (license license:zlib)))
+
+(define-public sbcl-cepl.fond
+  (let ((commit "45ed0ef72b65c905a2ee97c6e87da6de6ec424b7")
+        (revision "1"))
+    (package
+      (name "sbcl-cepl.fond")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cbaggers/cepl.fond")
+               (commit commit)))
+         (file-name (git-file-name "cepl.fond" version))
+         (sha256
+          (base32 "1f6abwwa6wpmf70067vwlcgkaaram45ycvdcgbg5yk3hsjypa728"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:asd-systems
+             '(list "cepl.fond" "cepl.fond.example")))
+      (inputs
+       (list sbcl-cepl
+             sbcl-cepl.sdl2
+             sbcl-real-rtg-math
+             sbcl-cl-fond))
+      (home-page "https://github.com/cbaggers/cepl.fond")
+      (synopsis "A helper library for using cl-fond with CEPL")
+      (description
+       "cepl.fond is a simple library for working with cl-fond with CEPL.")
       (license license:bsd-2))))
 
 (define-public sbcl-cepl.sdl2
