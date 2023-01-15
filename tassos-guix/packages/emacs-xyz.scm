@@ -312,3 +312,23 @@ See https://github.com/rksm/clj-org-analyzer for more information.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0l0kx27cqmxkjqyv2c6010ci5mml2lmp4xzi5dg0l8rc217hmz1g"))))))
+
+(define-public emacs-ligature
+  (package
+    (name "emacs-ligature")
+    (version "20220808.1225")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mickeynp/ligature.el.git")
+                    (commit "3d1460470736777fd8329e4bb4ac359bf4f1460a")))
+              (sha256
+               (base32
+                "1rnx2mp8y1phnvfirmf4a6lza38dg2554r9igyijl9rgqpjax94d"))))
+    (build-system emacs-build-system)
+    (home-page "https://www.github.com/mickeynp/ligature.el")
+    (synopsis "Display typographical ligatures in major modes")
+    (description
+     "This package converts graphemes (characters) present in major modes of your
+choice to the stylistic ligatures present in your frame's font.")
+    (license license:gpl3+)))
