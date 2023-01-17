@@ -26,18 +26,27 @@
 (define (serialize-path field-name val) val)
 
 (define-configuration home-shell-profile-configuration
-  (profile
+  (profile-head
    (text-config '())
    "\
 @code{home-shell-profile} is instantiated automatically by
 @code{home-environment}, DO NOT create this service manually, it can
 only be extended.
 
-@code{profile} is a list of file-like objects, which will go to
-@file{~/.profile}.  By default @file{~/.profile} contains the
-initialization code, which have to be evaluated by login shell to make
-home-environment's profile available to the user, but other commands
-can be added to the file if it is really necessary.
+@code{profile-head} is a list of file-like objects, which will go to the top of
+@file{~/.profile} in an arbitrary order. It should contain the initialization
+code, which have to be evaluated by login shell to make home-environment's
+profile available to the user, but other commands can be added to the file if it
+is really necessary.")
+  (profile-tail
+   (text-config '())
+   "\
+@code{home-shell-profile} is instantiated automatically by
+@code{home-environment}, DO NOT create this service manually, it can
+only be extended.
+
+@code{profile-tail} is a list of file-like objects, which will go to the end of
+@file{~/.profile} in an arbitrary order.
 
 In most cases shell's configuration files are preferred places for
 user's customizations.  Extend home-shell-profile service only if you
@@ -50,13 +59,15 @@ really know what you do."))
        (serialize-configuration
         config
         (filter-configuration-fields
-         home-shell-profile-configuration-fields '(profile)))))))
+         home-shell-profile-configuration-fields
+         '(profile-head
+           profile-tail)))))))
 
 (define (add-profile-extensions config extensions)
   (home-shell-profile-configuration
    (inherit config)
-   (profile
-    (append (home-shell-profile-configuration-profile config)
+   (profile-tail
+    (append (home-shell-profile-configuration-profile-tail config)
             extensions))))
 
 (define home-shell-profile-service-type
