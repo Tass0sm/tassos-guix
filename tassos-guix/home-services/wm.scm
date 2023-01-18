@@ -71,7 +71,7 @@ This is the declarative counterpart of 'text-file*'."
 
   (computed-file name build))
 
-(define-configuration/no-serialization home-bspwm-configuration
+(define-configuration home-bspwm-configuration
   (package
    (package bspwm)
    "The bspwm package to use.")
@@ -90,6 +90,13 @@ This is the declarative counterpart of 'text-file*'."
                                  "bspwmrc"
                                  bspwmrc)))))
 
+(define (add-bspwmrc-extensions config extensions)
+  (home-bspwm-configuration
+   (inherit config)
+   (bspwmrc
+    (append (home-bspwm-configuration-bspwmrc config)
+            extensions))))
+
 (define home-bspwm-service-type
   (service-type (name 'home-bspwm)
                 (extensions
@@ -99,6 +106,9 @@ This is the declarative counterpart of 'text-file*'."
                        (service-extension
                         home-files-service-type
                         add-bspwm-files)))
+                (compose concatenate)
+                (extend add-bspwmrc-extensions)
+                (default-value (home-bspwm-configuration))
                 (description "Install and configure the binary space
 partitioning window manager.")))
 
