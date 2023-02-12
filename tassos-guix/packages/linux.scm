@@ -14,7 +14,7 @@
 
 (define-public libthinkpad
   (let ((revision "0")
-        (commit "fab47ed4aed139e4ee93b9164e2b4b6a4b8c70ec"))
+        (commit "e7b4eca8142b35a1441c54cdeeb2b2b7e7d35649"))
     (package
       (name "libthinkpad")
       (version (git-version "2.6" revision commit))
@@ -26,7 +26,7 @@
                (commit commit)))
          (file-name (git-file-name "libthinkpad" version))
          (sha256
-          (base32 "1crbs4nxw0dwnvvakrk11m66zgxq0da0dfj5xn6gxa6074fw778i"))))
+          (base32 "03qgpvwskr0grs572c0r6xfkdl7yqspd069bfh29blh3sc4piwsw"))))
       (build-system cmake-build-system)
       (arguments
        (list #:phases
