@@ -14,7 +14,6 @@
   #:use-module (guix build utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:))
 
 (define-public libmspack
@@ -37,7 +36,7 @@
 (define-public evolution-ews
   (package
     (name "evolution-ews")
-    (version "3.46.0")
+    (version "3.46.4")
     (source
      (origin
        (method git-fetch)
@@ -64,90 +63,14 @@
          (string-append "-DLIBEXEC_INSTALL_DIR=" #$output "/lib")
          (string-append "-DSYSCONF_INSTALL_DIR=" #$output "/etc")
          "-DFORCE_INSTALL_PREFIX=ON")))
+    (native-search-paths
+     (list
+      (search-path-specification
+       (variable "EDS_EXTRA_PREFIXES")
+       (files (list "")))))
     (home-page "https://gitlab.gnome.org/GNOME/evolution-ews")
     (synopsis "MS Exchange integration through Exchange Web Services")
     (description
      "MS Exchange integration for the Evolution mail client using Exchange Web
 Services.")
     (license license:lgpl2.1)))
-
-(define-public evolution-with-plugins
-  #f
-  ;; derivation that is the directory union of evolution data server + a list of plugins
-  ;; after building:
-  ;; wrap everyprogram in bin and libexec with these settings:
-
-  ;; LD_LIBRARY_PATH "$out/lib" \
-  ;; EDS_ADDRESS_BOOK_MODULES "$out/lib/evolution-data-server/addressbook-backends/" \
-  ;; EDS_CALENDAR_MODULES "$out/lib/evolution-data-server/calendar-backends/" \
-  ;; EDS_CAMEL_PROVIDER_DIR "$out/lib/evolution-data-server/camel-providers/" \
-  ;; EDS_REGISTRY_MODULES "$out/lib/evolution-data-server/registry-modules/" \
-  ;; EVOLUTION_MODULEDIR "$out/lib/evolution/modules"
-
-  ;; then fix some symlinks (clarification needed)
-  ;; https://github.com/symphorien/nixpkgs/blob/f45f22d51901eb85a6bd4628681bcbf2732655af/pkgs/applications/networking/mailreaders/evolution/evolution/wrapper.nix
-  )
-
-;; then
-;; install evolution-with-plugins with evolution and evolution-ews as plugins.
-
-
-
-
-;; (define-public evolution-with-ews
-;;   (package
-;;     (inherit evolution)
-;;     (name "evolution-with-ews")
-;;     (inputs
-;;      `(,@(package-inputs evolution)
-;;        ("evolution-ews" ,evolution-ews)))
-;;     (arguments
-;;      `(#:imported-modules (,@%cmake-build-system-modules
-;;                            (guix build glib-or-gtk-build-system))
-;;        #:modules ((guix build cmake-build-system)
-;;                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-;;                   (guix build utils))
-;;        #:configure-flags
-;;        (list "-DENABLE_PST_IMPORT=OFF"    ; libpst is not packaged
-;;              "-DENABLE_LIBCRYPTUI=OFF")   ; libcryptui hasn't seen a release
-;;                                           ; in four years and cannot be built.
-;;        #:phases
-;;        (modify-phases %standard-phases
-;;          ;; The build system attempts to install user interface modules to the
-;;          ;; output directory of the "evolution-data-server" package.  This
-;;          ;; change redirects that change.
-;;          (add-after 'unpack 'patch-ui-module-dir
-;;            (lambda* (#:key outputs #:allow-other-keys)
-;;              (substitute* "src/modules/alarm-notify/CMakeLists.txt"
-;;                (("\\$\\{edsuimoduledir\\}")
-;;                 (string-append (assoc-ref outputs "out")
-;;                                "/lib/evolution-data-server/ui-modules")))))
-;;          (add-after 'install 'install-evolution-ews
-;;            (lambda _
-;;              (copy-recursively (assoc-ref %build-inputs "evolution-ews") %output)))
-;;          (add-after 'install 'glib-or-gtk-compile-schemas
-;;            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-;;          (add-after 'install 'glib-or-gtk-wrap
-;;            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))))
-
-;; (define-public evolution-with-ews
-;;   (package
-;;     (name "evolution-with-ews")
-;;     (version "3.42.1")
-;;     (source evolution)
-;;     (build-system trivial-build-system)
-;;     (inputs
-;;      `(("evolution-ews" ,evolution-ews)))
-;;     (arguments
-;;      `(#:modules ((guix build utils))
-;;        #:builder
-;;        (begin
-;;          (use-modules (guix build utils)
-;;                       (ice-9 match))
-;;          (mkdir-p %output)
-;;          (copy-recursively (assoc-ref %build-inputs "source") %output)
-;;          )))
-;;     (home-page "")
-;;     (synopsis "")
-;;     (description "")
-;;     (license license:gpl3+)))
