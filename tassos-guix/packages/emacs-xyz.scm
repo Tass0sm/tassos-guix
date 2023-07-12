@@ -326,6 +326,79 @@ See https://github.com/rksm/clj-org-analyzer for more information.")
      "This package converts graphemes (characters) present in major modes of your
 choice to the stylistic ligatures present in your frame's font.")
     (license license:gpl3+)))
+
+(define-public emacs-commenter
+  (package
+    (name "emacs-commenter")
+    (version "20160219.1627")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/yuutayamada/commenter.git")
+                    (commit "6d1885419434ba779270c6fda0e30d390bb074bd")))
+              (sha256
+               (base32
+                "1jwd3whag39qhzhbsfivzdlcr6vj37dv5ychkhmilw8v6dfdnpdb"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-let-alist))
+    (home-page "https://github.com/yuutayamada/commenter")
+    (synopsis "multiline-comment support package")
+    (description
+     "This package allows you to set both single and multi line comment variables like
+‘comment-start’ or ‘comment-end’ etc.")
+    (license license:gpl3+)))
+
+(define-public emacs-flycheck-nimsuggest
+  (package
+    (name "emacs-flycheck-nimsuggest")
+    (version "20171027.2208")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/yuutayamada/flycheck-nimsuggest.git")
+                    (commit "dc9a5de1cb3ee05db5794d824610959a1f603bc9")))
+              (sha256
+               (base32
+                "1bf65hrz0s6f180kn2ir8l5qn7in789w8pyy96b9gqn21z50vb9d"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-flycheck))
+    (home-page "https://github.com/yuutayamada/flycheck-nimsuggest")
+    (synopsis "flycheck backend for Nim using nimsuggest")
+    (description
+     "This package provides on-the-fly syntax check support using Nimsuggest and
+flycheck.el.")
+    (license license:gpl3+)))
+
+(define-public emacs-nim-mode
+  (package
+    (name "emacs-nim-mode")
+    (version "20211102.917")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nim-lang/nim-mode.git")
+                    (commit "744e076f0bea1c5ddc49f92397d9aa98ffa7eff8")))
+              (sha256
+               (base32
+                "0jjrjsks3q8qpipxcqdkm8pi3pjnkcxcydspbf0rkvy3x6i5mwkv"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-epc emacs-let-alist emacs-commenter
+                             emacs-flycheck-nimsuggest))
+    (home-page "https://github.com/nim-lang/nim-mode")
+    (synopsis "A major mode for the Nim programming language")
+    (description
+     "This package provides (and requires Emacs 24.4 or higher version):
+
+@itemize
+@item Syntax highlighting for *.nim, *.nims, *.nimble and nim.cfg files
+@item nim-compile command (C-c C-c), with error matcher for the compile buffer
+@item Nimsuggest
+@item Automatic indentation and line breaking (alpha)
+@item Outline by procedures (hs-hide-all, hs-show-all etc.)
+@end itemize")
+    (license license:gpl2+)))
+
 (define-public emacs-topsy
   (package
     (name "emacs-topsy")
