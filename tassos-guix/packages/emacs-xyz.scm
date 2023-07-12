@@ -79,8 +79,9 @@ See the accompanying Readme.org for configuration details.
 ")
    (license #f)))
 
-(define-public emacs-ox-haunt
+(define-public emacs-ox-haunt-latest
   (package
+    (inherit emacs-ox-haunt)
     (name "emacs-ox-haunt-latest")
     (version "4d585c5")
     (source
@@ -91,14 +92,7 @@ See the accompanying Readme.org for configuration details.
              (commit "d32c4b1ab258dc34ca7e713152a274eab35d2608")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h5g32kw3dgdp3vdzx34n8pcmg3ssn2bzmx5an7yksymibmayfjs"))))
-    (build-system emacs-build-system)
-    (home-page "https://git.sr.ht/~jakob/ox-haunt")
-    (synopsis "Export Org files to HTML appropriate for Haunt")
-    (description
-     "This library implements an HTML back-end for the Org generic exporter,
-producing output appropriate for Haunt's @code{html-reader}.")
-    (license license:gpl3+)))
+        (base32 "1h5g32kw3dgdp3vdzx34n8pcmg3ssn2bzmx5an7yksymibmayfjs"))))))
 
 (define-public emacs-magit-section
   (package
@@ -332,3 +326,24 @@ See https://github.com/rksm/clj-org-analyzer for more information.")
      "This package converts graphemes (characters) present in major modes of your
 choice to the stylistic ligatures present in your frame's font.")
     (license license:gpl3+)))
+(define-public emacs-topsy
+  (package
+    (name "emacs-topsy")
+    (version "20230414.1738")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alphapapa/topsy.el.git")
+                    (commit "86d4234e4a0e9d2f5bf0f1114ea9893da48e77d1")))
+              (sha256 (base32
+                       "0lxca6jxkkpkj063mf0m7ack7aaiazv4zz2xkwc2vv0hbrf9nzdx"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/alphapapa/topsy.el")
+    (synopsis "Simple sticky header")
+    (description
+     "This library shows a sticky header at the top of the window.  The header shows
+which definition the top line of the window is within.  Intended as a simple
+alternative to `semantic-stickyfunc-mode`.  Mode-specific functions may be added
+to `topsy-mode-functions'.  NOTE: For Org mode buffers, please use
+org-sticky-header: <https://github.com/alphapapa/org-sticky-header>.")
+    (license #f)))
