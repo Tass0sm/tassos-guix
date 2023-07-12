@@ -2,6 +2,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages text-editors)
+  #:use-module (gnu packages tree-sitter)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
