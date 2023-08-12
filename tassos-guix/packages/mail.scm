@@ -1,19 +1,22 @@
 (define-module (tassos-guix packages mail)
-  #:use-module (gnu packages gnome)
-  #:use-module (gnu packages ninja)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages webkit)
-  #:use-module (gnu packages autotools)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix build utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system meson)
   #:use-module ((guix licenses) #:prefix license:))
 
 (define-public libmspack
@@ -73,4 +76,41 @@
     (description
      "MS Exchange integration for the Evolution mail client using Exchange Web
 Services.")
+    (license license:lgpl2.1)))
+
+(define-public evolution-on
+  (package
+    (name "evolution-on")
+    (version "3.24.4")
+    (source
+     (local-file "/home/tassos/software/evolution-on"
+                 #:recursive? #t
+                 #:select? (git-predicate "/home/tassos/software/evolution-on")))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "-Dplugin-install-dir=" #$output "/lib/evolution/plugins")
+                   "-Dinstall-schemas=true"
+                   "-Dinstall-gconf=true")
+           #:validate-runpath? #f
+           #:glib-or-gtk? #t))
+    (native-search-paths
+     (list
+      (search-path-specification
+       (variable "EVOLUTION_PLUGINDIR")
+       (files (list "lib/evolution/plugins")))))
+    (native-inputs
+     (append
+      (list
+       gtk+
+       `(,glib "bin")
+       glib
+       gnu-gettext
+       cmake
+       pkg-config
+       evolution)
+      (map cadr (package-inputs evolution))))
+    (home-page "https://github.com/ozanty/evolution-on")
+    (synopsis "Tray plugin for the Evolution email client")
+    (description "Tray plugin for the Evolution email client")
     (license license:lgpl2.1)))
