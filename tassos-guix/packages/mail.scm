@@ -83,9 +83,13 @@ Services.")
     (name "evolution-on")
     (version "3.24.4")
     (source
-     (local-file "/home/tassos/software/evolution-on"
-                 #:recursive? #t
-                 #:select? (git-predicate "/home/tassos/software/evolution-on")))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Tass0sm/evolution-on")
+             (commit "2aad42393c06da24375291506c06efb7519e74d7")))
+       (sha256
+        (base32 "0skxfv5sa438r7dx4m5dyqfq7psz6l1prsscm59f2q6vr8sgj193"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
